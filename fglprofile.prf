@@ -1,0 +1,2 @@
+dbi.database.kitchenalia.source   = "kitchenalia.db"
+dbi.database.kitchenalia.driver   = "dbmsqt"
