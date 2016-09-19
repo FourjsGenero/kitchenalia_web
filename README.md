@@ -1,5 +1,5 @@
 # kitchenalia_web
-UNDER CNSTRUCTION - WORK IN PROGRESS
+UNDER CONSTRUCTION - WORK IN PROGRESS
 
 The server side programs of the Kitchenalia Genero Mobile demo
 
