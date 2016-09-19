@@ -1,5 +1,7 @@
 # kitchenalia_web
-The server side programs of the Kitchenalia Geneor Mobile demo
+UNDER CNSTRUCTION - WORK IN PROGRESS
+
+The server side programs of the Kitchenalia Genero Mobile demo
 
 Includes the following programs ...
 
