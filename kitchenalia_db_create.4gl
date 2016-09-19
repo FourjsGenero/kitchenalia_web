@@ -51,7 +51,7 @@ END FUNCTION
 FUNCTION db_create_tables()
     WHENEVER ERROR STOP
 
-     EXECUTE IMMEDIATE "CREATE TABLE product (
+ EXECUTE IMMEDIATE "CREATE TABLE product (
         pr_code CHAR(8) NOT NULL,
         pr_desc VARCHAR(80) NOT NULL,
         pr_pg_code CHAR(2) NOT NULL,
@@ -68,9 +68,9 @@ FUNCTION db_create_tables()
         pi_idx INTEGER NOT NULL,
         pi_filename VARCHAR(80) NOT NULL,
         pi_changed DATETIME YEAR TO SECOND NOT NULL,
-        CONSTRAINT pk_product_image_1 PRIMARY KEY(pi_pr_code, pi_idx))"{,
+        CONSTRAINT pk_product_image_1 PRIMARY KEY(pi_pr_code, pi_idx),
         CONSTRAINT fk_product_image_product_1 FOREIGN KEY(pi_pr_code)
-            REFERENCES product(pr_code))"}
+            REFERENCES product(pr_code))"
     EXECUTE IMMEDIATE "CREATE TABLE product_group (
         pg_code CHAR(2) NOT NULL,
         pg_desc VARCHAR(80) NOT NULL,
@@ -92,7 +92,7 @@ FUNCTION db_create_tables()
         cu_country VARCHAR(80),
         cu_postcode CHAR(10),
         cu_phone CHAR(15),
-        cu_mobille CHAR(15),
+        cu_mobile CHAR(15),
         cu_email VARCHAR(30),
         cu_website VARCHAR(40),
         cu_lat DECIMAL(10,6),
@@ -102,6 +102,8 @@ FUNCTION db_create_tables()
         oh_code CHAR(10) NOT NULL,
         oh_cu_code CHAR(8) NOT NULL,
         oh_order_date DATE NOT NULL,
+        oh_year SMALLINT,
+        oh_month SMALLINT,
         oh_upload DATETIME YEAR TO SECOND,
         oh_order_value DECIMAL(11,2),
         oh_delivery_name VARCHAR(80),
@@ -139,7 +141,7 @@ FUNCTION db_create_tables()
         su_website VARCHAR(40),
         su_lat DECIMAL(10,6),
         su_lon DECIMAL(10,6),
-        CONSTRAINT pk_supplier_1 PRIMARY KEY(su_code))"
+        CONSTRAINT pk_customer_1_1 PRIMARY KEY(su_code))"
 END FUNCTION
 
 #+ Drop all tables from database.
@@ -162,11 +164,11 @@ END FUNCTION
 FUNCTION db_add_indexes()
     WHENEVER ERROR STOP
 
-    EXECUTE IMMEDIATE "CREATE INDEX idx_product_1 ON product(pr_desc, pr_code)"
+        EXECUTE IMMEDIATE "CREATE INDEX idx_product_1 ON product(pr_desc, pr_code)"
     EXECUTE IMMEDIATE "CREATE INDEX idx_product_2 ON product(pr_pg_code, pr_code)"
     EXECUTE IMMEDIATE "CREATE INDEX idx_product_group_1 ON product_group(pg_desc, pg_code)"
     EXECUTE IMMEDIATE "CREATE INDEX idx_customer_1 ON customer(cu_name, cu_code)"
-    EXECUTE IMMEDIATE "CREATE INDEX idx_supplier_1 ON supplier(su_name, su_code)"
+    EXECUTE IMMEDIATE "CREATE INDEX idx_customer_1_1 ON supplier(su_name, su_code)"
 
 END FUNCTION
 
@@ -186,6 +188,7 @@ DEFINE l_oh RECORD LIKE order_header.*
 DEFINE l_ol RECORD LIKE order_line.*
 
 DEFINE l_oh_line_count INTEGER
+CONSTANT TOTAL_ORDERS = 100
 
     -- Put list into array, makes getting random value easier
     DECLARE supplier_curs CURSOR FROM "SELECT su_code FROM supplier"
@@ -215,7 +218,7 @@ DEFINE l_oh_line_count INTEGER
         WHERE pr_code = l_pr.pr_code
     END FOR
 
-    FOR i = 1 TO 100#00
+    FOR i = 1 TO TOTAL_ORDERS
         DISPLAY "Insert Order ", i
         LET l_oh.oh_code = "BR", i USING "&&&&&&"
         LET l_oh.oh_cu_code = l_customer_arr[util.Math.rand(l_customer_arr.getLength())+1]
@@ -225,7 +228,9 @@ DEFINE l_oh_line_count INTEGER
         FROM customer
         WHERE cu_code = l_oh.oh_cu_code
         
-        LET l_oh.oh_order_date = TODAY - 100 + (i/100)
+        LET l_oh.oh_order_date = TODAY - 365 + (365*i/TOTAL_ORDERS)
+        LET l_oh.oh_year  = YEAR(l_oh.oh_order_date)
+        LET l_oh.oh_month = MONTH(l_oh.oh_order_date)
         LET l_oh.oh_order_value = 0
         LET l_oh.oh_upload = CURRENT YEAR TO SECOND
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Project defaultApplication="18736" gstVersion="3001d" version="3.1">
+<Project defaultApplication="-1235602781" gstVersion="3001d" version="3.1">
   <Settings>
     <DynamicProperties version="2">
       <DynamicProperty description="Accent color (Android 5.0 and later)" initialValue="#9575CD" isDefaultInherited="false" isHidden="false" label="Accent color" name="gma-accent-color" readOnly="false" type="COLOR"/>
@@ -65,6 +65,11 @@
     </Library>
     <Application binaryName="kitchenalia_db_create" dependencies="1236544428||-685885155" id="1644002512" label="kitchenalia_db_create">
       <File filePath="kitchenalia_db_create.4gl"/>
+    </Application>
+    <Application binaryName="kitchenalia_service" dependencies="1236544428||-685885155" environment="value:FGLAPPSERVER=8096" id="-1235602781" label="kitchenalia_service">
+      <File filePath="kitchenalia_server.4gl"/>
+      <File filePath="kitchenalia_server_data.4gl"/>
+      <File filePath="kitchenalia_server_photo.4gl"/>
     </Application>
     <Application binaryName="kitchenalia_web" dependencies="1236544428||-685885155" id="18736" label="kitchenalia_web">
       <File filePath="kitchenalia_web.4gl"/>

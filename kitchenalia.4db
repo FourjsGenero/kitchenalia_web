@@ -58,7 +58,7 @@
     <Column fglLength="80" fglType="201" name="cu_country" notNull="false" order="6" status="A" uuid="db/column1107"/>
     <Column fglLength="10" fglType="0" name="cu_postcode" notNull="false" order="7" status="A" uuid="db/column1108"/>
     <Column fglLength="15" fglType="0" name="cu_phone" notNull="false" order="8" status="A" uuid="db/column1391"/>
-    <Column fglLength="15" fglType="0" name="cu_mobille" notNull="false" order="9" status="A" uuid="db/column1393"/>
+    <Column fglLength="15" fglType="0" name="cu_mobile" notNull="false" order="9" status="A" uuid="db/column1393"/>
     <Column fglLength="30" fglType="201" name="cu_email" notNull="false" order="10" status="A" uuid="db/column1395"/>
     <Column fglLength="40" fglType="201" name="cu_website" notNull="false" order="11" status="A" uuid="db/column1397"/>
     <Column fglLength="2566" fglType="5" name="cu_lat" notNull="false" order="12" status="A" uuid="db/column1401"/>
@@ -70,14 +70,16 @@
     <Column fglLength="10" fglType="0" name="oh_code" notNull="true" order="1" status="A" uuid="db/column1370"/>
     <Column fglLength="8" fglType="0" name="oh_cu_code" notNull="true" order="2" status="A" uuid="db/column1371"/>
     <Column fglLength="4" fglType="7" name="oh_order_date" notNull="true" order="3" status="A" uuid="db/column1372"/>
-    <Column fglLength="3594" fglType="10" name="oh_upload" notNull="false" order="4" status="A" uuid="db/column1373"/>
-    <Column fglLength="2818" fglType="5" name="oh_order_value" notNull="false" order="5" status="A" uuid="db/column1374"/>
-    <Column fglLength="80" fglType="201" name="oh_delivery_name" notNull="false" order="6" status="A" uuid="db/column1375"/>
-    <Column fglLength="255" fglType="201" name="oh_delivery_address" notNull="false" order="7" status="A" uuid="db/column1376"/>
-    <Column fglLength="80" fglType="201" name="oh_delivery_city" notNull="false" order="8" status="A" uuid="db/column1378"/>
-    <Column fglLength="2" fglType="0" name="oh_delivery_state" notNull="false" order="9" status="A" uuid="db/column1380"/>
-    <Column fglLength="80" fglType="201" name="oh_delivery_country" notNull="false" order="10" status="A" uuid="db/column1382"/>
-    <Column fglLength="10" fglType="0" name="oh_delivery_postcode" notNull="false" order="11" status="A" uuid="db/column1383"/>
+    <Column fglLength="2" fglType="1" name="oh_year" notNull="false" order="4" status="A" uuid="db/column1366"/>
+    <Column fglLength="2" fglType="1" name="oh_month" notNull="false" order="5" status="A" uuid="db/column1368"/>
+    <Column fglLength="3594" fglType="10" name="oh_upload" notNull="false" order="6" status="A" uuid="db/column1373"/>
+    <Column fglLength="2818" fglType="5" name="oh_order_value" notNull="false" order="7" status="A" uuid="db/column1374"/>
+    <Column fglLength="80" fglType="201" name="oh_delivery_name" notNull="false" order="8" status="A" uuid="db/column1375"/>
+    <Column fglLength="255" fglType="201" name="oh_delivery_address" notNull="false" order="9" status="A" uuid="db/column1376"/>
+    <Column fglLength="80" fglType="201" name="oh_delivery_city" notNull="false" order="10" status="A" uuid="db/column1378"/>
+    <Column fglLength="2" fglType="0" name="oh_delivery_state" notNull="false" order="11" status="A" uuid="db/column1380"/>
+    <Column fglLength="80" fglType="201" name="oh_delivery_country" notNull="false" order="12" status="A" uuid="db/column1382"/>
+    <Column fglLength="10" fglType="0" name="oh_delivery_postcode" notNull="false" order="13" status="A" uuid="db/column1383"/>
     <Index indexColumns="oh_code" indexConstraint="primaryKey" name="PK_order_header_1" status="A" uuid="db/index438"/>
   </Table>
   <Table active="true" name="order_line" status="A" uuid="db/table308">
@@ -115,7 +117,7 @@
   <Views ActiveView="View-1" showLabels="true">
     <View Name="View-1">
       <Layout>
-        <![CDATA[AAAAAgAAABYAZABiAC8AdABhAGIAbABlADIANQA0QJWMAAAAAABAZFS0tLS0tT/QMSbpeNUBAQAAABYAZABiAC8AdABhAGIAbABlADMAMQAwwFMeHh4eHhNAck8PDw8PDj/bAgxJul47AQAAABQAZABiAC8AdABhAGIAbABlADMAOUBwrS0tLS0tQHMHh4eHh4g/3MzMzMzM0wEAAAAWAGQAYgAvAHQAYQBiAGwAZQAyADUAN0CRzeHh4eHiQICEtLS0tLU/26XjU/fO3wEAAAAUAGQAYgAvAHQAYQBiAGwAZQA0ADFAhwtLS0tLS0ByilpaWlpbP9nKwIMSbp0BAAAAFgBkAGIALwB0AGEAYgBsAGUAMgA5ADlAleFpaWlpaUByvS0tLS0sP9BR64UeuFUBAAAAFgBkAGIALwB0AGEAYgBsAGUAMwAwADdAgwHh4eHh4kB/QAAAAAAAP9xJul41P4MBAAAAFABkAGIALwB0AGEAYgBsAGUANAAzQHDuHh4eHhxAY7h4eHh4dj/c3S8an759AQAAABYAZABiAC8AdABhAGIAbABlADMAMAA4QHAy0tLS0tJAgZFpaWlpaz/YUeuFHrhXAQ==]]>
+        <![CDATA[AAAAAgAAABYAZABiAC8AdABhAGIAbABlADMAMAA4QIE/okz3ok1AiCyF2zCF4T/ktDlYEGJSAQAAABQAZABiAC8AdABhAGIAbABlADQAMUA0vr6+vr3AQJER6+vr6+4/5AAAAAAABAEAAAAWAGQAYgAvAHQAYQBiAGwAZQAyADUANMBrUAAAAAAoQJW4lpaWlps/5IMSbpeNVAEAAAAWAGQAYgAvAHQAYQBiAGwAZQAzADEAMMB9HqP5TqP/QI23+U6j+VU/5Cj1wo9cLQEAAAAUAGQAYgAvAHQAYQBiAGwAZQA0ADNAR8ZGRkZGAECEyh4eHh4gP+O+dsi0OVwBAAAAFgBkAGIALwB0AGEAYgBsAGUAMgA1ADdARjw8PDw74EBuItLS0tLAP+NT987ZFosBAAAAFABkAGIALwB0AGEAYgBsAGUAMwA5QEW+vr6+vpBAicpubm5udT/j3ztkWhywAQAAABYAZABiAC8AdABhAGIAbABlADIAOQA5QGE7S0tLSyhAlbdLS0tLUD/kcrAgxJuqAQAAABYAZABiAC8AdABhAGIAbABlADMAMAA3QHlpGRkZGRRAaiVVVVVVTD/kUeuFHrhWAQ==]]>
       </Layout>
     </View>
   </Views>
