@@ -50,11 +50,91 @@ END FUNCTION
 #+ Create all tables in database.
 FUNCTION db_create_tables()
     WHENEVER ERROR STOP
+    DISPLAY db_get_database_type()
+    -- Note: You need to create the database create script for each database type
+    CASE db_get_database_type()
+        WHEN "IFX"
 
- EXECUTE IMMEDIATE "CREATE TABLE product (
+    -- Following code is cut and paste from database creation script when Informix specified
+    EXECUTE IMMEDIATE "CREATE TABLE product (
         pr_code CHAR(8) NOT NULL,
         pr_desc VARCHAR(80) NOT NULL,
-        pr_pg_code CHAR(2) NOT NULL,
+        pr_pg_code CHAR(3) NOT NULL,
+        pr_price DECIMAL(11,2) NOT NULL,
+        pr_barcode VARCHAR(20),
+        pr_su_code CHAR(8))"
+    EXECUTE IMMEDIATE "CREATE TABLE product_image (
+        pi_pr_code CHAR(8) NOT NULL,
+        pi_idx INTEGER NOT NULL,
+        pi_filename VARCHAR(80) NOT NULL,
+        pi_changed DATETIME YEAR TO SECOND NOT NULL)"
+    EXECUTE IMMEDIATE "CREATE TABLE product_group (
+        pg_code CHAR(3) NOT NULL,
+        pg_desc VARCHAR(80) NOT NULL)"
+    EXECUTE IMMEDIATE "CREATE TABLE device_registry (
+        dr_idx INTEGER NOT NULL,
+        dr_device_id VARCHAR(50) NOT NULL)"
+    EXECUTE IMMEDIATE "CREATE TABLE phone_home (
+        ph_device_id VARCHAR(50),
+        ph_lat DECIMAL(10,6),
+        ph_lon DECIMAL(10,6))"
+    EXECUTE IMMEDIATE "CREATE TABLE customer (
+        cu_code CHAR(8) NOT NULL,
+        cu_name VARCHAR(80) NOT NULL,
+        cu_address VARCHAR(255),
+        cu_city VARCHAR(80),
+        cu_state CHAR(2),
+        cu_country VARCHAR(80),
+        cu_postcode CHAR(10),
+        cu_phone CHAR(15),
+        cu_mobile CHAR(15),
+        cu_email VARCHAR(30),
+        cu_website VARCHAR(40),
+        cu_lat DECIMAL(10,6),
+        cu_lon DECIMAL(10,6))"
+    EXECUTE IMMEDIATE "CREATE TABLE order_header (
+        oh_code CHAR(10) NOT NULL,
+        oh_cu_code CHAR(8) NOT NULL,
+        oh_order_date DATE NOT NULL,
+        oh_year SMALLINT,
+        oh_month SMALLINT,
+        oh_upload DATETIME YEAR TO SECOND,
+        oh_order_value DECIMAL(11,2),
+        oh_delivery_name VARCHAR(80),
+        oh_delivery_address VARCHAR(255),
+        oh_delivery_city VARCHAR(80),
+        oh_delivery_state CHAR(2),
+        oh_delivery_country VARCHAR(80),
+        oh_delivery_postcode CHAR(10))"
+    EXECUTE IMMEDIATE "CREATE TABLE order_line (
+        ol_oh_code CHAR(10) NOT NULL,
+        ol_idx INTEGER NOT NULL,
+        ol_pr_code CHAR(8) NOT NULL,
+        ol_qty DECIMAL(11,2) NOT NULL,
+        ol_price DECIMAL(11,2) NOT NULL,
+        ol_line_value DECIMAL(11,2) NOT NULL)"
+    EXECUTE IMMEDIATE "CREATE TABLE supplier (
+        su_code CHAR(8) NOT NULL,
+        su_name VARCHAR(80) NOT NULL,
+        su_address VARCHAR(255),
+        su_city VARCHAR(80),
+        su_state CHAR(2),
+        su_country VARCHAR(80),
+        su_postcode CHAR(10),
+        su_phone CHAR(15),
+        su_mobille CHAR(15),
+        su_email VARCHAR(30),
+        su_website VARCHAR(40),
+        su_lat DECIMAL(10,6),
+        su_lon DECIMAL(10,6))"
+
+        WHEN "SQT"
+
+    -- Following code is cut and paste from database creation script when SQLite specified
+   EXECUTE IMMEDIATE "CREATE TABLE product (
+        pr_code CHAR(8) NOT NULL,
+        pr_desc VARCHAR(80) NOT NULL,
+        pr_pg_code CHAR(3) NOT NULL,
         pr_price DECIMAL(11,2) NOT NULL,
         pr_barcode VARCHAR(20),
         pr_su_code CHAR(8),
@@ -72,7 +152,7 @@ FUNCTION db_create_tables()
         CONSTRAINT fk_product_image_product_1 FOREIGN KEY(pi_pr_code)
             REFERENCES product(pr_code))"
     EXECUTE IMMEDIATE "CREATE TABLE product_group (
-        pg_code CHAR(2) NOT NULL,
+        pg_code CHAR(3) NOT NULL,
         pg_desc VARCHAR(80) NOT NULL,
         CONSTRAINT pk_product_group_1 PRIMARY KEY(pg_code))"
     EXECUTE IMMEDIATE "CREATE TABLE device_registry (
@@ -141,7 +221,10 @@ FUNCTION db_create_tables()
         su_website VARCHAR(40),
         su_lat DECIMAL(10,6),
         su_lon DECIMAL(10,6),
-        CONSTRAINT pk_customer_1_1 PRIMARY KEY(su_code))"
+        CONSTRAINT pk_supplier_1 PRIMARY KEY(su_code))"
+        OTHERWISE
+            DISPLAY "ERROR - No Tables Created, unknown database type"
+    END CASE
 END FUNCTION
 
 #+ Drop all tables from database.
@@ -164,11 +247,11 @@ END FUNCTION
 FUNCTION db_add_indexes()
     WHENEVER ERROR STOP
 
-        EXECUTE IMMEDIATE "CREATE INDEX idx_product_1 ON product(pr_desc, pr_code)"
+    EXECUTE IMMEDIATE "CREATE INDEX idx_product_1 ON product(pr_desc, pr_code)"
     EXECUTE IMMEDIATE "CREATE INDEX idx_product_2 ON product(pr_pg_code, pr_code)"
     EXECUTE IMMEDIATE "CREATE INDEX idx_product_group_1 ON product_group(pg_desc, pg_code)"
     EXECUTE IMMEDIATE "CREATE INDEX idx_customer_1 ON customer(cu_name, cu_code)"
-    EXECUTE IMMEDIATE "CREATE INDEX idx_customer_1_1 ON supplier(su_name, su_code)"
+    EXECUTE IMMEDIATE "CREATE INDEX idx_supplier_1 ON supplier(su_name, su_code)"
 
 END FUNCTION
 
