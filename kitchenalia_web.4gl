@@ -1,3 +1,6 @@
+IMPORT com
+IMPORT util
+
 TYPE dialogType RECORD
     name STRING,
     type STRING,
@@ -428,12 +431,20 @@ DEFINE l_sql base.SqlHandle
 DEFINE i,j INTEGER
 DEFINE sb base.StringBuffer
 
+DEFINE ok BOOLEAN
+DEFINE l_address STRING
+DEFINE l_lat, l_lon FLOAT
+DEFINE l_err_text STRING
+
     --TODO When dynamic dialogs can handle INPUT to row of line of an array, this next line will probably be changed
     LET id = ui.Dialog.createInputByName(l_fields)
     
     CALL id.addTrigger("ON ACTION accept")
     CALL id.addTrigger("ON ACTION cancel")
-
+    IF l_table = "customer" THEN
+        CALL id.addTrigger("ON ACTION geocode")
+    END IF
+    
     WHILE TRUE
         CASE id.nextEvent()
             WHEN "BEFORE INPUT"
@@ -445,7 +456,13 @@ DEFINE sb base.StringBuffer
                 END FOR
                 -- TODO: Remove MESSAGE when this issue is resolved.
                 MESSAGE "KNOWN ISSUE: The INPUT is displaying in line 1 rather than the expected line"
-                
+            WHEN "ON ACTION geocode"
+                LET l_address = SFMT("%1,%2",id.getFieldValue("cu_city"), id.getFieldValue("cu_country"))
+                CALL geocode(l_address) RETURNING ok, l_lat, l_lon, l_err_text
+                IF ok THEN
+                    CALL id.setFieldValue("cu_lat", l_lat)
+                    CALL id.setFieldValue("cu_lon", l_lon)
+                END IF
             WHEN "ON ACTION cancel"
                 LET int_Flag = TRUE
                 EXIT WHILE
@@ -564,3 +581,72 @@ DEFINE l_filename STRING
     LET int_flag = 0
     CLOSE WINDOW kitchenalia_web_image
 END FUNCTION
+
+
+
+
+
+-- Get the lat/long of an address using google maps geocoding API 
+-- https://developers.google.com/maps/documentation/geocoding/
+FUNCTION geocode(l_address)
+DEFINE l_address STRING
+DEFINE l_http_req com.HTTPRequest
+DEFINE l_http_resp com.HTTPResponse
+DEFINE url STRING
+DEFINE l_result_str STRING
+DEFINE l_result_rec RECORD
+    results DYNAMIC ARRAY OF RECORD
+        address_components DYNAMIC ARRAY OF RECORD
+            long_name STRING,
+            short_name STRING,
+            types DYNAMIC ARRAY OF STRING
+        END RECORD,
+        formatted_address STRING,
+        geometry RECORD
+            location RECORD
+                lat FLOAT,
+                lng FLOAT
+            END RECORD,
+            location_type STRING,
+            viewport RECORD
+                northeast RECORD
+                    lat FLOAT,
+                    lng FLOAT
+                END RECORD,
+                southwest RECORD
+                    lat FLOAT,
+                    lng FLOAT
+                END RECORD
+            END RECORD
+        END RECORD,
+        place_id STRING,
+        types DYNAMIC ARRAY OF STRING
+    END RECORD,
+    status STRING
+END RECORD
+DEFINE l_status INTEGER
+
+    LET url = SFMT("https://maps.googleapis.com/maps/api/geocode/json?address=%1&key=%2",l_address, FGL_GETRESOURCE("key.google.geocode"))
+    TRY 
+        LET l_http_req = com.HTTPRequest.Create(url)
+        CALL l_http_req.doRequest()
+        LET l_http_resp = l_http_req.getResponse()
+        IF l_http_resp.getStatusCode() != 200 THEN
+            DISPLAY SFMT("HTTP ERROR(%1) %2",l_http_resp.getStatusCode(), l_http_resp.getStatusDescription())
+            RETURN FALSE
+        ELSE
+            LET l_result_str = l_http_resp.getTextResponse()
+        END IF
+    CATCH
+        LET l_status = STATUS
+        RETURN FALSE, 0, 0, SFMT("ERROR (%1) %2", l_status, err_get(l_status))
+    END TRY
+
+   #DISPLAY util.JSON.proposeType(l_result_str) -- uncomment this to determine the record layour of l_result_rec
+    CALL util.JSON.parse(l_result_str, l_result_rec)
+    IF l_result_rec.results.getLength() = 1 THEN
+        RETURN TRUE, l_result_rec.results[1].geometry.location.lat,l_result_rec.results[1].geometry.location.lng, ""
+    ELSE
+        RETURN FALSE, 0, 0, "More than one result"
+    END IF
+END FUNCTION 

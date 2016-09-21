@@ -235,6 +235,9 @@ define l_json_string string
         when l_arglist matches "oh_code=*"
             let l_oh_code = l_arglist.subString(9, l_arglist.getLength())
             let l_where = sfmt("oh_code = '%1' " , l_oh_code clipped)
+        when l_arglist matches "cu_code=*"
+            let l_oh_code = l_arglist.subString(9, l_arglist.getLength())
+            let l_where = sfmt("oh_cu_code = '%1' " , l_oh_code clipped)
         # TODO do we allow all orders?
         #when l_arglist.getLength() = 0
         #    let l_where = "1=1"
@@ -325,10 +328,10 @@ define l_json_string string
 
     case
         when l_arglist matches "pg_code=*"
-            let l_pr_pg_code = l_arglist.subString(8, l_arglist.getLength())
+            let l_pr_pg_code = l_arglist.subString(9, l_arglist.getLength())
             let l_where = sfmt("pi_pr_code in (select pr_code from product where pr_pg_code = '%1') " , l_pr_pg_code clipped)
         when l_arglist matches "pr_code=*"
-            let l_pr_code = l_arglist.subString(8, l_arglist.getLength())
+            let l_pr_code = l_arglist.subString(9, l_arglist.getLength())
             let l_where = sfmt("pi_pr_code = '%1' " , l_pr_code clipped)
        otherwise
             return false, NULL
@@ -365,7 +368,7 @@ define l_json_string string
             return false, NULL
     end case
 
-    let l_filename = "img/", l_filename
+    let l_filename = "Images/", l_filename
 
     if not os.path.exists(l_filename) THEN
         return false, NULL

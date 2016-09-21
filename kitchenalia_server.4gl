@@ -164,3 +164,25 @@ DEFINE argpos, i INTEGER
     END IF
     RETURN address, method, arglist
 END FUNCTION
+
+
+
+# A lit of test URL's
+{
+http://localhost:8096/ws/r/kitchenalia/get_product
+http://localhost:8096/ws/r/kitchenalia/get_customer
+http://localhost:8096/ws/r/kitchenalia/get_supplier
+http://localhost:8096/ws/r/kitchenalia/get_product_group
+http://localhost:8096/ws/r/kitchenalia/get_product_image?pg_code=114
+http://localhost:8096/ws/r/kitchenalia/get_product_image_file?filename=93040500PDM001B.jpg
+
+http://localhost:8096/ws/r/kitchenalia/get_order?cu_code=BRTA0003
+
+http://localhost:8096/ws/r/kitchenalia/get_group_analysis?cu_code=BRTA0003
+http://localhost:8096/ws/r/kitchenalia/get_time_analysis?cu_code=BRTA0003
+http://localhost:8096/ws/r/kitchenalia/get_time_analysis?pg_code=114
+
+
+
+
+}
