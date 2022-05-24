@@ -1,5 +1,8 @@
+# :warning: DEPRECATED :warning:
+
+This demo made use of paralledl dialogs which have been deprecated in 4.00
+
 # kitchenalia_web
-UNDER CONSTRUCTION - WORK IN PROGRESS
 
 The server side programs of the Kitchenalia Genero Mobile demo
 
